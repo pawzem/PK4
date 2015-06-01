@@ -5,6 +5,8 @@ int fpom(int a){
 	for(int i =1;i<0;i++){
 	cout<<"aaaaaaaaa";
 }
+
+double dsdadsa(int __a2, float a_3, float a4){};
 }
 
 

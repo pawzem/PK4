@@ -5,11 +5,13 @@ SorceFile::SorceFile(string name)
 {
 	ifstream fin(name);
 	string line;
+	string cont ="";
 	if (fin.is_open()){
 		while (!fin.eof()){
 			getline(fin, line);
-			this->content.push_back(line);
+			cont += line;
 		}
+		this->content.push_back(cont);
 		fin.close();
 	}
 	else throw (string)("Program couldn't open file: " + name + "\n");
@@ -28,18 +30,35 @@ list<string> SorceFile::getContetnt(){
 
 list<int> SorceFile::compare(File * f){
 	list<int> diffs;
-	int line = 0;
-	list<string> base, comparator;
-	base = this->getContetnt();
-	comparator = f->getContetnt();
-	auto that = comparator.begin();
-	for (auto it = base.begin(); it != base.end(); ++it){
-		if (*it != *that) diffs.push_back(line);
-		if (++that == comparator.end())break;
-		++line;
-	}
+	string first, second;
+	smatch m;
+	string word4 = "[[:w:]]+[[:s:]]+[[:w:]]+[(]{1}[^)]*[)]{1}";
 
-	diffs.push_back(this->getContetnt().size() - f->getContetnt().size());
+
+	first = *(this->getContetnt().begin());
+	second = *(f->getContetnt().begin()); 
+	string tab[] = { first, second };
+	regex e(word4);
+	list<string> out;
+	out.push_back(first);
+	out.push_back("Te same funkcje\n");
+	for (int i = 0; i < 2; ++i){
+		string s = tab[i];
+		string args = "";
+		while (std::regex_search(s, m, e)) {
+			args = "";
+			for (auto x : m){
+				args += x;
+			}
+			s = m.suffix().str();
+			if(i==1)out.push_back(args);
+			else if(find(out.begin(),out.end(),args)!=out.end()){
+				out.erase(find(out.begin(), out.end(), args));
+			}
+		}
+	}
+	out.push_back("Drugi plik\n");
+	this->content = out;
 	return diffs;
 }
 bool SorceFile::compare(string pattern){

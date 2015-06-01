@@ -1,10 +1,13 @@
 #pragma once
+
+
+#include "File.h"
 class Archiviser
 {
+	string fileName;
 public:
-	Archiviser();
-	void save(File* a,File* b, string outputName);
-	void clear(string name);
+	Archiviser(string name);
+	void save(File* a,File* b);
 	~Archiviser();
 };
 
